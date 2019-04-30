@@ -27,30 +27,31 @@ func runContainer(image string, in map[string]string) (map[string]string, error)
 	return out, err
 }
 
-type containerResult struct {
+type helloInput struct {
+	Image string `lookup:"nebula.image"`
+}
+
+type helloOutput struct {
 	Result string
+}
+
+func sayHello(input helloInput) helloOutput {
+	out, err := runContainer(input.Image, map[string]string{"message": "howdy"})
+	if err != nil {
+		panic(err)
+	}
+	result := out["hello"]
+	return helloOutput{Result: result}
 }
 
 func main() {
 
-	// Workflow input is from Hiera and a constant (declared by annotations in the In struct).
 	lyra.Serve(`imperative_go`, nil, &lyra.Workflow{
-		Parameters: struct {
-			Image string `lookup:"nebula.image"`
-		}{},
-		Return: containerResult{},
+		Parameters: helloInput{},
+		Return:     helloOutput{},
 		Steps: map[string]lyra.Step{
-
-			`run`: &lyra.Action{
-				Do: func(input struct {
-					Image string
-				}) containerResult {
-					out, err := runContainer(input.Image, map[string]string{"message": "howdy"})
-					if err != nil {
-						panic(err)
-					}
-					result := out["hello"]
-					return containerResult{Result: result}
-				}}}})
+			`run`: &lyra.Action{Do: sayHello},
+		},
+	})
 
 }
