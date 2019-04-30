@@ -12,3 +12,6 @@ foobernetes:
 
 golang:
   hello: Value of hello key
+
+nebula:
+  image: foo/foo
