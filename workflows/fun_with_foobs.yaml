@@ -1,0 +1,40 @@
+parameters:
+  load_balancer_policy:
+    type: String
+    lookup: foobernetes.policies
+returns: [ loadBalancerID ]    
+
+steps:
+
+  web-servers:
+    returns: webServerID
+    Foobernetes::Webserver:
+      port: 8080
+      appServers: [ $appServerID ]
+
+  loadbalancer:
+    returns: loadBalancerID
+    Foobernetes::Loadbalancer:
+      loadBalancerIP: 10.0.0.1
+      location: eu1
+      replica: false
+      webServerIDs: [ $webServerID ]
+      tags:
+        team: "lyra team"
+        role: primary
+
+  app-server:
+    returns:
+      appServerID: instanceID
+    Foobernetes::Instance:
+      location: eu1
+      image: lyra::application
+      config:
+        name: app-server1
+        databaseID: $databaseID
+      cpus: 4
+      memory: 8G
+
+  database:
+    call: foobernetes
+    returns: databaseID

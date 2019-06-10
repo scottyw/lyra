@@ -1,0 +1,12 @@
+returns: [ databaseID ]    
+
+steps:
+
+  database:
+    returns:
+      databaseID: instanceID
+    Foobernetes::Instance:
+      location: eu1
+      image: "lyra::database"
+      cpus: 16
+      memory: 64G

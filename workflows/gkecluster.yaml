@@ -1,0 +1,11 @@
+# You will need to set the following environment variables to authenticate with GCP
+# export GOOGLE_PROJECT=<some-project>
+# export GOOGLE_APPLICATION_CREDENTIALS=<credentials-file.json>
+
+steps:
+  Composer_environment:
+  Google::Composer_environment:
+    name: "lyra-test"
+    zone: "us-west2-a"
+    machine_type: "standard-1"
+    initial_node_count: "3"
